@@ -1,0 +1,91 @@
+body {
+  background: #0c0d13;
+  color: #efedf4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+.header-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 2rem;
+  text-align: center;
+}
+h1 {
+  color: #c7a4ff;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+.subtitle {
+  color: #aba6b9;
+  font-size: 1.2rem;
+}
+nav {
+  margin-top: 1.5rem;
+}
+.btn {
+  display: inline-block;
+  background: #483369;
+  color: #ffffff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+.btn:hover {
+  background: #5c4387;
+}
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+}
+section {
+  margin-bottom: 3rem;
+}
+h2, h3 {
+  color: #c7a4ff;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.card {
+  background: #1d1a27;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #2b273b;
+}
+.card h4 {
+  margin-top: 0;
+  color: #ffffff;
+}
+.card a {
+  color: #c7a4ff;
+  text-decoration: none;
+  font-weight: bold;
+}
+.card a:hover {
+  text-decoration: underline;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+li {
+  background: #1d1a27;
+  margin: 0.8rem 0;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  border-left: 4px solid #c7a4ff;
+}
+footer {
+  border-top: 1px solid #211e2d;
+  text-align: center;
+  padding: 2rem;
+  color: #aba6b9;
+  font-size: 0.9rem;
+}
