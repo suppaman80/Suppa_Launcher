@@ -1,0 +1,29 @@
+[package]
+name = "suppaworld-launcher"
+version = "0.1.0"
+edition = "2024"
+description = "Launcher per le applicazioni Suppaworld - Gestisce download e aggiornamenti da GitHub"
+license = "GPL-3.0-or-later"
+
+[[bin]]
+name = "suppaworld-launcher"
+path = "src/main.rs"
+
+[dependencies]
+eframe = { version = "0.31.1", default-features = false, features = ["default_fonts", "glow", "x11", "wayland"] }
+image = { version = "0.25", default-features = false, features = ["png"] }
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
+semver = "1"
+serde = { version = "1", features = ["derive"] }
+sha2 = "0.10"
+tempfile = "3"
+
+[dev-dependencies]
+serde_json = "1"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+panic = "abort"
+strip = true
