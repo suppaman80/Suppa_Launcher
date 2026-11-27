@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Suppaworld Launcher
+Comment=Launcher per le applicazioni Suppaworld
+Exec=suppaworld-launcher
+Icon=suppaworld-launcher
+Terminal=false
+Categories=Utility;System;
+StartupNotify=true
+StartupWMClass=suppaworld-launcher
