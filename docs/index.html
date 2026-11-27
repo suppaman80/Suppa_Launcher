@@ -10,7 +10,6 @@
     <meta property="og:type" content="website">
     <title>Suppaworld Launcher — Suppaworld</title>
     <link rel="stylesheet" href="./styles.css">
-    <link rel="icon" type="image/png" href="./suppa-terminal.png">
     <script src="./app.js" defer></script>
   </head>
   <body id="top">
@@ -19,7 +18,10 @@
 
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Suppaworld, back to top">
-        <img class="brand-mark" src="./suppa-terminal.png" width="37" height="37" alt="">
+        <svg class="brand-mark" width="37" height="37" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="33" height="33" x="2" y="2" rx="8" fill="#181922" stroke="var(--pink)" stroke-width="1.5"/>
+          <path d="M10 12L16 18.5L20 15L23 20L27 14L10 12Z" stroke="#c7a4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <span class="brand-name">
           <strong>Suppaworld</strong>
           <small>LAUNCHER</small>
@@ -77,7 +79,7 @@
                 </div>
                 <div class="launcher-grid">
                   <div class="app-card preview-card">
-                    <img class="app-preview-icon" src="./suppa-terminal.png" width="34" height="34" alt="">
+                    <div class="app-preview-icon icon-terminal" aria-hidden="true"><span></span><span></span></div>
                     <div class="app-preview-info">
                       <div class="app-preview-name">Suppa-Terminal</div>
                       <div class="app-preview-state">Native terminal · v0.1.0</div>
@@ -85,7 +87,7 @@
                     <button class="app-preview-action">Open</button>
                   </div>
                   <div class="app-card preview-card">
-                    <img class="app-preview-icon" src="./suppa-usb-analyzer.png" width="34" height="34" alt="">
+                    <div class="app-preview-icon icon-usb" aria-hidden="true"><span></span><span></span></div>
                     <div class="app-preview-info">
                       <div class="app-preview-name">Suppa USB Analyzer</div>
                       <div class="app-preview-state">USB · Serial · v0.1.0</div>
@@ -198,7 +200,10 @@
 
     <footer class="site-footer section-wrap">
       <div class="footer-brand">
-        <img class="brand-mark" src="./suppa-terminal.png" width="31" height="31" alt="">
+        <svg class="brand-mark" width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="27" height="27" x="2" y="2" rx="6" fill="#181922" stroke="var(--pink)" stroke-width="1.5"/>
+          <path d="M8 10L12 14L14 12L16 15L18 11L8 10Z" stroke="#c7a4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <span><strong>Suppaworld</strong><small>Built by Suppaman80</small></span>
       </div>
       <a class="footer-email" href="mailto:Suppaman80@proton.me">Suppaman80@proton.me</a>
@@ -210,3 +215,36 @@
     </footer>
   </body>
 </html>
+
+/* SVG icon additions for inline preview icons */
+.app-preview-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  background: rgba(24, 25, 34, 0.6);
+  border: 1px solid #2b2c37;
+  color: #c7a4ff;
+  font-size: 11px;
+}
+
+.icon-terminal span {
+  width: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow: 0 0 8px rgba(199, 164, 255, 0.6);
+}
+
+.icon-terminal span:nth-child(1) { height: 10px; }
+.icon-terminal span:nth-child(2) { height: 18px; }
+
+.icon-usb span {
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.icon-usb span:nth-child(1) { margin-top: -2px; }
+.icon-usb span:nth-child(2) { margin-top: 2px; }
