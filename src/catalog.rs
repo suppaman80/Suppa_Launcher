@@ -19,6 +19,7 @@ pub struct App {
     pub repo: &'static str,
     pub title: &'static str,
     pub description: &'static str,
+    pub author: &'static str,
     pub icon: &'static [u8],
 }
 
@@ -27,12 +28,14 @@ pub const APPS: [App; 2] = [
         repo: "Suppa-Terminal",
         title: "Suppa-Terminal",
         description: "Terminale Linux con guide ai comandi.",
+        author: "Suppaman80",
         icon: include_bytes!("../assets/suppa-terminal.png"),
     },
     App {
         repo: "Suppa-Usb-Analyzer",
         title: "Suppa USB Analyzer",
         description: "Esplora periferiche USB e porte seriali.",
+        author: "Suppaman80",
         icon: include_bytes!("../assets/suppa-usb-analyzer.png"),
     },
 ];
@@ -40,6 +43,10 @@ pub const APPS: [App; 2] = [
 impl App {
     pub fn site(&self) -> String {
         format!("https://{OWNER}.github.io/{}/", self.repo)
+    }
+
+    pub fn github(&self) -> String {
+        format!("https://github.com/{OWNER}/{}", self.repo)
     }
 
     fn filename(&self, version: &Version) -> String {
@@ -60,9 +67,7 @@ impl App {
                     .ok()?;
                 let file = entry.path();
                 let metadata = fs::symlink_metadata(&file).ok()?;
-                (version.pre.is_empty()
-                    && version.build.is_empty()
-                    && metadata.is_file()
+                (metadata.is_file()
                     && metadata.permissions().mode() & 0o100 != 0
                     && is_appimage(&file))
                 .then_some((version, file))
@@ -83,10 +88,11 @@ pub fn is_appimage(path: &Path) -> bool {
 #[derive(Clone)]
 pub struct Available {
     pub version: Version,
-    name: String,
-    tag: String,
-    size: u64,
-    digest: String,
+    pub released: String,
+    pub name: String,
+    pub tag: String,
+    pub size: u64,
+    pub digest: String,
 }
 
 #[derive(Deserialize)]
@@ -94,6 +100,7 @@ struct Release {
     tag_name: String,
     draft: bool,
     prerelease: bool,
+    published_at: Option<String>,
     assets: Vec<Asset>,
 }
 
@@ -105,15 +112,23 @@ struct Asset {
 }
 
 impl Release {
-    fn select(self, app: &App) -> Result<Available> {
-        if self.draft || self.prerelease {
+    fn select(self, app: &App, allow_pre: bool) -> Result<Available> {
+        if self.draft {
+            return Err("La release e' una bozza.".into());
+        }
+        if self.prerelease && !allow_pre {
             return Err("La release non e' stabile.".into());
         }
         let version = Version::parse(self.tag_name.strip_prefix('v').ok_or("Tag non valido.")?)?;
-        if !version.pre.is_empty() || !version.build.is_empty() {
+        if !allow_pre && (!version.pre.is_empty() || !version.build.is_empty()) {
             return Err("Il tag non rappresenta una versione stabile.".into());
         }
         let name = app.filename(&version);
+        let released = self
+            .published_at
+            .as_deref()
+            .map(format_date)
+            .unwrap_or_else(|| "-".into());
         let asset = self
             .assets
             .into_iter()
@@ -130,12 +145,31 @@ impl Release {
         }
         Ok(Available {
             version,
+            released,
             name,
             tag: self.tag_name,
             size: asset.size,
             digest: digest.to_ascii_lowercase(),
         })
     }
+}
+
+pub fn format_date(iso: &str) -> String {
+    let date = iso.get(0..10).unwrap_or(iso);
+    let parts: Vec<&str> = date.split('-').collect();
+    if parts.len() != 3 {
+        return iso.to_string();
+    }
+    const MONTHS: [&str; 12] = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    ];
+    let year = parts[0];
+    let month: usize = parts[1].parse().unwrap_or(0);
+    let day = parts[2].trim_start_matches('0');
+    let day = if day.is_empty() { "0" } else { day };
+    let name = MONTHS.get(month.saturating_sub(1)).copied().unwrap_or("???");
+    format!("{name} {day}, {year}")
 }
 
 fn client() -> Result<Client> {
@@ -147,7 +181,22 @@ fn client() -> Result<Client> {
         .build()?)
 }
 
-pub fn latest(app: &App) -> Result<Available> {
+pub fn latest(app: &App, include_pre: bool) -> Result<Available> {
+    if include_pre {
+        let url = format!(
+            "https://api.github.com/repos/{OWNER}/{}/releases?per_page=30",
+            app.repo
+        );
+        let releases: Vec<Release> = client()?.get(url).send()?.error_for_status()?.json()?;
+        let mut last = String::from("Nessuna release compatibile.");
+        for release in releases {
+            match release.select(app, true) {
+                Ok(available) => return Ok(available),
+                Err(error) => last = error.to_string(),
+            }
+        }
+        return Err(last.into());
+    }
     let url = format!(
         "https://api.github.com/repos/{OWNER}/{}/releases/latest",
         app.repo
@@ -163,7 +212,7 @@ pub fn latest(app: &App) -> Result<Available> {
         return Err("Limite GitHub raggiunto. Riprova tra qualche minuto.".into());
     }
     let release: Release = reply.error_for_status()?.json()?;
-    release.select(app)
+    release.select(app, false)
 }
 
 pub fn install(app: &App, release: &Available, root: &Path, progress: impl Fn(f32)) -> Result<()> {
@@ -238,11 +287,25 @@ mod tests {
         let bytes = b"\x7fELF\0\0\0\0AI\x02test";
         let app = &APPS[0];
         let name = app.filename(&Version::new(0, 1, 0));
-        let file = directory.path().join(&name);
-        std::fs::write(&file, bytes).unwrap();
-        let mut perms = fs::metadata(&file).unwrap().permissions();
-        perms.set_mode(0o700);
-        fs::set_permissions(&file, perms).unwrap();
-        assert!(is_appimage(&file));
+        let digest = format!("{:x}", Sha256::digest(bytes));
+        let json = serde_json::json!({
+            "tag_name":"v0.1.0","draft":false,"prerelease":false,
+            "assets":[{"name":name,"size":bytes.len(),"digest":format!("sha256:{digest}")}]
+        });
+        let release = serde_json::from_value::<Release>(json)
+            .unwrap()
+            .select(app, false)
+            .unwrap();
+        assert!(save_verified(&b"corrotto"[..], &release, directory.path(), |_| {}).is_err());
+        assert!(!directory.path().join(&name).exists());
+        save_verified(&bytes[..], &release, directory.path(), |_| {}).unwrap();
+        assert!(save_verified(&b"corrotto"[..], &release, directory.path(), |_| {}).is_err());
+        assert_eq!(fs::read(directory.path().join(name)).unwrap(), bytes);
+        assert_eq!(fs::read_dir(directory.path()).unwrap().count(), 1);
+    }
+
+    #[test]
+    fn confronta_versioni_numericamente() {
+        assert!(Version::new(0, 10, 0) > Version::new(0, 9, 0));
     }
 }
