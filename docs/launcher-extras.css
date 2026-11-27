@@ -1,0 +1,170 @@
+/* Extra styles for launcher inline preview (SVG icons + window mock) */
+.app-preview-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  background: rgba(24, 25, 34, 0.6);
+  border: 1px solid #2b2c37;
+  color: #c7a4ff;
+  font-size: 11px;
+}
+
+.icon-terminal span {
+  width: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow: 0 0 8px rgba(199, 164, 255, 0.6);
+}
+
+.icon-terminal span:nth-child(1) { height: 10px; }
+.icon-terminal span:nth-child(2) { height: 18px; }
+
+.icon-usb span {
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.icon-usb span:nth-child(1) { margin-top: -2px; }
+.icon-usb span:nth-child(2) { margin-top: 2px; }
+
+.window-top {
+  min-height: 37px;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 0 12px;
+  border-bottom: 1px solid #2b2c35;
+  color: #888997;
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+}
+
+.window-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.window-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #494a55;
+}
+
+.window-title {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 8px;
+  color: #b6b5c2;
+}
+
+.window-live {
+  margin-left: auto;
+  color: var(--green);
+  font-size: 7px;
+}
+
+.window-body {
+  padding: 20px 20px 16px;
+}
+
+.launcher-preview {
+  max-width: 420px;
+}
+
+.launcher-header {
+  margin-bottom: 16px;
+}
+
+.launcher-title {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.launcher-subtitle {
+  color: var(--muted);
+  font-size: 8px;
+  margin-top: 3px;
+  letter-spacing: 0.15em;
+}
+
+.launcher-grid {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.app-card {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 12px;
+  background: var(--surface);
+}
+
+.app-card:hover {
+  border-color: rgba(220, 78, 137, 0.4);
+}
+
+.preview-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-preview-info {
+  flex: 1;
+}
+
+.app-preview-name {
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.app-preview-state {
+  color: var(--muted);
+  font-size: 8px;
+  margin-top: 2px;
+}
+
+.app-preview-action {
+  padding: 6px 10px;
+  font-size: 8px;
+  font-weight: 700;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.app-preview-action:hover {
+  border-color: var(--pink);
+  color: var(--pink-light);
+}
+
+.launcher-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(220, 78, 137, 0.2);
+  border-radius: 6px;
+  background: rgba(220, 78, 137, 0.06);
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.launcher-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--pink);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(220, 78, 137, 0.6);
+}
