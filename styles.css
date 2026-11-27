@@ -1,0 +1,26 @@
+body {
+  background: #0c0d13;
+  color: #efedf4;
+  font-family: sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 2rem;
+}
+header {
+  border-bottom: 1px solid #2b2c37;
+  padding-bottom: 1rsm;
+  margin-bottom: 2rem;
+}
+h1 { color: #a879ef; }
+a {
+ color: #dc4e89;
+  text-decoration: none;
+}
+section { margin-bottom: 2rem; }
+ul { list-style: none; padding: 0; }
+li {
+  background: #181922;
+  margin: 0.5rem 0;
+  padding: 1rem;
+  border-radius: 8px;
+}
